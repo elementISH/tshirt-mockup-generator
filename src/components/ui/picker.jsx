@@ -18,6 +18,8 @@ import Wheel from "@uiw/react-color-wheel";
 export function Picker({ background, setBackground, className }) {
   const solids = [
     "#2c5346",
+    "#22493C",
+    "#213f35",
     "#800220",
     "#9f88a2",
     "#7856a0",
