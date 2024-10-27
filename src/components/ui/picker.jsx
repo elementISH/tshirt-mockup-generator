@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -7,14 +6,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import ColorPicker from "react-color-picker-wheel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Paintbrush } from "lucide-react";
-import Link from "next/link";
-import { useMemo, useState } from "react";
-import Wheel from "@uiw/react-color-wheel";
+import dynamic from "next/dynamic";
+import { useMemo } from "react";
 
+const Wheel = dynamic(() => import("@uiw/react-color-wheel"), { ssr: false });
 export function Picker({ background, setBackground, className }) {
   const solids = [
     "#2c5346",

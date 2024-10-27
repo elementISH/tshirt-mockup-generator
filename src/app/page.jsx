@@ -1,4 +1,5 @@
 "use client";
+
 import { Picker } from "@/components/ui/picker";
 import { useEffect, useState, useRef } from "react";
 import html2canvas from "html2canvas";
@@ -8,15 +9,20 @@ export default function Home() {
   const [background, setBackground] = useState("#334155");
   const captureRef = useRef(null);
 
+  // Effect to apply background color to SVG elements
   useEffect(() => {
-    if (captureRef.current) {
-      const colorElements = captureRef.current.querySelectorAll(
-        "[data-group='color']"
-      );
-      colorElements.forEach((element) => {
-        element.style.fill = background;
-      });
-    }
+    const applyBackgroundColor = () => {
+      if (captureRef.current) {
+        const colorElements = captureRef.current.querySelectorAll(
+          "[data-group='color']"
+        );
+        colorElements.forEach((element) => {
+          element.style.fill = background;
+        });
+      }
+    };
+
+    applyBackgroundColor(); // Call the function to apply color
   }, [background]);
 
   const copyDivToClipboard = async () => {
@@ -57,7 +63,7 @@ export default function Home() {
                 <div className="absolute top-2 left-4 text-black z-10 p-1 rounded ">
                   color: {background}
                 </div>
-                <img src="Tshirt.png" alt="" />
+                <img src="Tshirt.png" alt="T-shirt" />
               </div>
               <div>
                 <Picker background={background} setBackground={setBackground} />
