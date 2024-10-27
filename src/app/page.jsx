@@ -1,12 +1,17 @@
 "use client";
 
 import { Picker } from "@/components/ui/picker";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import html2canvas from "html2canvas";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton"; // Import the skeleton component
+import Image from "next/image";
+import { AsyncImage } from "loadable-image";
+import { Loader, LoaderCircle } from "lucide-react";
 
-export default function Home() {
+export default function Page() {
   const [background, setBackground] = useState("#334155");
+  const [loading, setLoading] = useState(false); // State to track loading
   const captureRef = useRef(null);
 
   // Effect to apply background color to SVG elements
@@ -48,8 +53,8 @@ export default function Home() {
 
   return (
     <>
-      <div className="absolute left-2 top-2 text-white bg-slate-900/50 p-2 rounded-full px-4">
-        Made With ❤️ By Ismail Mansour
+      <div className="absolute left-5 top-2 text-white bg-slate-900/50 p-2 rounded-full px-4">
+        Made With ❤️ By <span className="underline">Ismail Mansour</span>
       </div>
       <div className="h-screen w-screen grid place-items-center bg-slate-700 overflow-hidden">
         <div className="grid place-items-center">
@@ -63,7 +68,11 @@ export default function Home() {
                 <div className="absolute top-2 left-4 text-black z-10 p-1 rounded ">
                   color: {background}
                 </div>
-                <img src="Tshirt.png" alt="T-shirt" />
+                <Suspense
+                  fallback={<LoaderCircle size={64} className="animate-spin" />}
+                >
+                  <img src="Tshirt.png" alt="T-shirt" />
+                </Suspense>
               </div>
               <div>
                 <Picker background={background} setBackground={setBackground} />
