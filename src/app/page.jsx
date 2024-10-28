@@ -12,7 +12,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"; // Import shadcn Dialog components
 import { Button } from "@/components/ui/button";
-
+async function checkCompatibility() {
+  try {
+    const { state } = await navigator.permissions.query({
+      name: "clipboard-write",
+    });
+    return state === "granted";
+  } catch (error) {
+    return false;
+  }
+}
 export default function Page() {
   const [background, setBackground] = useState("#334155");
   const [showDialog, setShowDialog] = useState(false); // Track dialog visibility
@@ -38,8 +47,7 @@ export default function Page() {
 
   const copyDivToClipboard = async () => {
     if (!captureRef.current) return;
-    setSupportsCopy(navigator.clipboard);
-
+    setSupportsCopy(await checkCompatibility());
     try {
       const canvas = await html2canvas(captureRef.current);
       const dataUrl = canvas.toDataURL("image/png");
@@ -105,6 +113,14 @@ export default function Page() {
               <div>
                 <Picker background={background} setBackground={setBackground} />
               </div>
+              <a
+                href={imageDataUrl}
+                target="_blank"
+                download
+                style={{ textDecoration: "none" }}
+              >
+                download here
+              </a>
               <Button
                 onClick={copyDivToClipboard}
                 className="text-white bg-slate-900"
@@ -140,19 +156,18 @@ export default function Page() {
                     download it by clicking below.
                   </p>
                 )}
-                <Button
-                  onClick={handleDownload}
-                  className="text-white bg-slate-900 w-full"
+                <a
+                  href={imageDataUrl}
+                  download
+                  style={{ textDecoration: "none" }}
                 >
-                  <a
-                    href={imageDataUrl}
-                    download="image.png"
-                    className="text-white text-center w-full inline-block"
-                    style={{ textDecoration: "none" }}
+                  <Button
+                    onClick={handleDownload}
+                    className="text-white bg-slate-900 w-full"
                   >
                     Download Image
-                  </a>
-                </Button>
+                  </Button>
+                </a>
               </div>
               {supportsCopy && (
                 <Button
