@@ -4,17 +4,22 @@ import { Picker } from "@/components/ui/picker";
 import { useEffect, useState, useRef, Suspense } from "react";
 import html2canvas from "html2canvas";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton"; // Import the skeleton component
-import Image from "next/image";
-import { AsyncImage } from "loadable-image";
-import { Loader, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"; // Import shadcn Dialog components
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
   const [background, setBackground] = useState("#334155");
-  const [loading, setLoading] = useState(false); // State to track loading
+  const [showDialog, setShowDialog] = useState(false); // Track dialog visibility
+  const [imageDataUrl, setImageDataUrl] = useState(null); // Store the image data URL
   const captureRef = useRef(null);
+  const supportsCopy = !!(navigator && navigator.clipboard);
 
-  // Effect to apply background color to SVG elements
   useEffect(() => {
     const applyBackgroundColor = () => {
       if (captureRef.current) {
@@ -27,25 +32,46 @@ export default function Page() {
       }
     };
 
-    applyBackgroundColor(); // Call the function to apply color
+    applyBackgroundColor();
   }, [background]);
 
   const copyDivToClipboard = async () => {
     if (!captureRef.current) return;
 
     try {
-      // Capture the div as a canvas
       const canvas = await html2canvas(captureRef.current);
+      const dataUrl = canvas.toDataURL("image/png");
 
-      // Convert canvas to a blob and copy to clipboard
-      canvas.toBlob(async (blob) => {
-        if (blob) {
-          await navigator.clipboard.write([
-            new ClipboardItem({ "image/png": blob }),
-          ]);
-          toast.success("Image copied to clipboard! Paste to share.");
-        }
-      }, "image/png");
+      setImageDataUrl(dataUrl); // Set image data URL for dialog display
+      setShowDialog(true); // Open dialog
+    } catch (error) {
+      toast.error("Failed to capture image, please try again.");
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!imageDataUrl) return;
+
+    // Show toast and delay download
+    toast.info("Opening image in new tab for download...");
+    setTimeout(() => {
+      const link = document.createElement("a");
+      link.href = imageDataUrl;
+      link.download = "image.png";
+      link.click();
+    }, 1500); // 1.5 seconds delay
+  };
+
+  const handleCopyToClipboard = async () => {
+    if (!imageDataUrl) return;
+
+    try {
+      const response = await fetch(imageDataUrl);
+      const blob = await response.blob();
+      await navigator.clipboard.write([
+        new ClipboardItem({ "image/png": blob }),
+      ]);
+      toast.success("Image copied to clipboard! Paste to share.");
     } catch (error) {
       toast.error("Failed to copy image, please try again.");
     }
@@ -53,7 +79,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="absolute left-5 top-2 text-white bg-slate-900/50 p-2 rounded-full px-4">
+      <div className="absolute left-5 top-3 text-white bg-slate-900/50 p-2 rounded-full px-4">
         Made With ❤️ By <span className="underline">Ismail Mansour</span>
       </div>
       <div className="h-screen w-screen grid place-items-center bg-slate-700 overflow-hidden">
@@ -77,16 +103,56 @@ export default function Page() {
               <div>
                 <Picker background={background} setBackground={setBackground} />
               </div>
-              <button
+              <Button
                 onClick={copyDivToClipboard}
-                className="text-white px-4 py-2 rounded bg-slate-900"
+                className="text-white bg-slate-900"
               >
                 Share Image
-              </button>
+              </Button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Dialog for displaying the image */}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Generated T-shirt Image</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col items-center gap-4">
+            <img
+              src={imageDataUrl}
+              alt="T-shirt"
+              className="max-w-full max-h-[70vh] object-contain"
+            />
+            <div className="flex gap-1 w-full">
+              <div className="flex flex-col gap-2 w-1/2">
+                {!supportsCopy && (
+                  <p className="text-xs text-gray-600">
+                    Long press the image to copy it. Alternatively, you can
+                    download it by clicking below.
+                  </p>
+                )}
+                <Button
+                  onClick={handleDownload}
+                  className="text-white bg-slate-900 w-full"
+                >
+                  Download Image
+                </Button>
+              </div>
+              {supportsCopy && (
+                <Button
+                  onClick={handleCopyToClipboard}
+                  className="text-white bg-slate-900 w-1/2"
+                >
+                  Copy Image To Clipboard
+                </Button>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

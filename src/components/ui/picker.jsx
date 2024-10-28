@@ -9,10 +9,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Paintbrush } from "lucide-react";
-import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import { useState } from "react";
+import ColorPicker from "react-color-picker-wheel";
 
-const Wheel = dynamic(() => import("@uiw/react-color-wheel"), { ssr: false });
 export function Picker({ background, setBackground, className }) {
   const solids = [
     "#2c5346",
@@ -28,9 +27,8 @@ export function Picker({ background, setBackground, className }) {
     "#101213",
   ];
 
-  const defaultTab = useMemo(() => {
-    return "solid";
-  }, [background]);
+  // State to remember the selected tab
+  const [selectedTab, setSelectedTab] = useState("solid");
 
   return (
     <Popover>
@@ -58,8 +56,12 @@ export function Picker({ background, setBackground, className }) {
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full">
-        <Tabs defaultValue={defaultTab} className="w-full">
+      <PopoverContent className="w-full select-none">
+        <Tabs
+          value={selectedTab}
+          onValueChange={setSelectedTab} // Update selected tab on change
+          className="w-full"
+        >
           <TabsList className="w-full mb-4">
             <TabsTrigger className="flex-1" value="solid">
               Solid
@@ -82,14 +84,10 @@ export function Picker({ background, setBackground, className }) {
 
           <TabsContent value="wheel" className="mt-0">
             <div className="flex flex-wrap gap-1 mb-2 justify-items-center justify-center">
-              {/* <ColorPicker
-                initialColor="#FF0000"
+              <ColorPicker
+                initialColor={background}
                 onChange={(color) => setBackground(color.hex)}
-                size={200}
-              /> */}
-              <Wheel
-                color={background}
-                onChange={(color) => setBackground(color.hex)}
+                size={300}
               />
             </div>
           </TabsContent>

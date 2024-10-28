@@ -71,6 +71,9 @@ body {
   }
 }
 
-/* .pickedColorContainer {
+.pickedColorContainer {
   display: none !important;
-} */
+}
+.outerContainer {
+  justify-content: center !important;
+}
