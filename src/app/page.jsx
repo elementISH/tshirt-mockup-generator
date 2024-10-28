@@ -12,6 +12,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"; // Import shadcn Dialog components
 import { Button } from "@/components/ui/button";
+
+function dataURItoBlob(dataurl) {
+  if (!dataurl) return;
+  const arr = dataurl.split(",");
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+}
+
 async function checkCompatibility() {
   try {
     const { state } = await navigator.permissions.query({
@@ -22,13 +36,13 @@ async function checkCompatibility() {
     return false;
   }
 }
+
 export default function Page() {
   const [background, setBackground] = useState("#334155");
   const [showDialog, setShowDialog] = useState(false); // Track dialog visibility
   const [imageDataUrl, setImageDataUrl] = useState(null); // Store the image data URL
   const [supportsCopy, setSupportsCopy] = useState(false); // Check for support
   const captureRef = useRef(null);
-  // let supportsCopy = !!(navigator && navigator.clipboard);
 
   useEffect(() => {
     const applyBackgroundColor = () => {
@@ -64,12 +78,23 @@ export default function Page() {
 
     // Show toast and delay download
     toast.info("Preparing image for download...");
-    // setTimeout(() => {
-    //   const link = document.createElement("a");
-    //   link.href = imageDataUrl;
-    //   link.download = "image.png";
-    //   link.click();
-    // }, 1500); // 1.5 seconds delay
+
+    // Convert data URI to Blob
+    const blob = dataURItoBlob(imageDataUrl);
+    const url = URL.createObjectURL(blob);
+
+    // Create a link element to trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "image.png"; // Specify the file name
+
+    // Programmatically click the link to trigger the download
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url); // Revoke the object URL after download
   };
 
   const handleCopyToClipboard = async () => {
@@ -113,14 +138,7 @@ export default function Page() {
               <div>
                 <Picker background={background} setBackground={setBackground} />
               </div>
-              <a
-                href={imageDataUrl}
-                target="_blank"
-                download
-                style={{ textDecoration: "none" }}
-              >
-                download here
-              </a>
+
               <Button
                 onClick={copyDivToClipboard}
                 className="text-white bg-slate-900"
@@ -156,18 +174,12 @@ export default function Page() {
                     download it by clicking below.
                   </p>
                 )}
-                <a
-                  href={imageDataUrl}
-                  download
-                  style={{ textDecoration: "none" }}
+                <Button
+                  onClick={handleDownload}
+                  className="text-white bg-slate-900 w-full"
                 >
-                  <Button
-                    onClick={handleDownload}
-                    className="text-white bg-slate-900 w-full"
-                  >
-                    Download Image
-                  </Button>
-                </a>
+                  Download Image
+                </Button>
               </div>
               {supportsCopy && (
                 <Button
