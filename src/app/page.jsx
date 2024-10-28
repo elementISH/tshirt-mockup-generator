@@ -18,9 +18,12 @@ export default function Page() {
   const [showDialog, setShowDialog] = useState(false); // Track dialog visibility
   const [imageDataUrl, setImageDataUrl] = useState(null); // Store the image data URL
   const captureRef = useRef(null);
-  const supportsCopy = !!(navigator && navigator.clipboard);
+  let supportsCopy;
 
   useEffect(() => {
+    if (navigator) {
+      supportsCopy = !!(navigator && navigator.clipboard);
+    }
     const applyBackgroundColor = () => {
       if (captureRef.current) {
         const colorElements = captureRef.current.querySelectorAll(

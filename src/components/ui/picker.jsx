@@ -9,9 +9,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Paintbrush } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useState } from "react";
-import ColorPicker from "react-color-picker-wheel";
-
+const ColorPicker = dynamic(() => import("react-color-picker-wheel"), {
+  ssr: false,
+});
 export function Picker({ background, setBackground, className }) {
   const solids = [
     "#2c5346",
