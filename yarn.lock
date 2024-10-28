@@ -1681,6 +1681,22 @@
   resolved "https://registry.yarnpkg.com/@uiw/color-convert/-/color-convert-2.3.2.tgz#1cb7931d6ec3bda8ecadca4ae65a382bec3813a2"
   integrity sha512-Txs0oAcOGhvM15yi7NqDJSws6htpuGx75EblFlZmh4h4AyUYXaeN2HNcOAUt835M3SN1j7rqMC+XERIE4r776Q==
 
+"@uiw/react-color-alpha@2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@uiw/react-color-alpha/-/react-color-alpha-2.3.2.tgz#61a3bac06bd426c4c1cc1893a536b24de31881b6"
+  integrity sha512-+yh+KEpNKjxNFFODQrB3Lki2hu6kznoSCngHgptlWBUtAC3e/e7tIiTTedSpCGr7fwIpC0CWrKwxENA3tyY/2Q==
+  dependencies:
+    "@uiw/color-convert" "2.3.2"
+    "@uiw/react-drag-event-interactive" "2.3.2"
+
+"@uiw/react-color-shade-slider@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@uiw/react-color-shade-slider/-/react-color-shade-slider-2.3.2.tgz#056e6ad5aa320a2a70bb07c1e8aad249b5cf9feb"
+  integrity sha512-nM8AJPpq9UnC7LWjQEZ28bIm8gMRqRzk3dXfGQ4X3t3040d11o4sbl23pTmWTjn6P+3+MP/L2FhmvLSTUkMp/g==
+  dependencies:
+    "@uiw/color-convert" "2.3.2"
+    "@uiw/react-color-alpha" "2.3.2"
+
 "@uiw/react-color-wheel@^2.3.2":
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/@uiw/react-color-wheel/-/react-color-wheel-2.3.2.tgz#066ec384da3ea4e5728de3973bf9be27ca2670f6"

@@ -11,26 +11,35 @@ import { cn } from "@/lib/utils";
 import { Paintbrush } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-const ColorPicker = dynamic(() => import("react-color-picker-wheel"), {
+import { hsvaToHex } from "@uiw/color-convert";
+const ShadeSlider = dynamic(() => import("@uiw/react-color-shade-slider"), {
   ssr: false,
 });
-export function Picker({ background, setBackground, className }) {
-  const solids = [
-    "#2c5346",
-    "#22493C",
-    "#213f35",
-    "#800220",
-    "#9f88a2",
-    "#7856a0",
-    "#493362",
-    "#A2CFFE",
-    "#92bce2",
-    "#247082",
-    "#101213",
-  ];
+const Wheel = dynamic(() => import("@uiw/react-color-wheel"), {
+  ssr: false,
+});
+const solids = [
+  "#2c5346",
+  "#22493C",
+  "#213f35",
+  "#800220",
+  "#9f88a2",
+  "#7856a0",
+  "#493362",
+  "#A2CFFE",
+  "#92bce2",
+  "#247082",
+  "#101213",
+];
 
-  // State to remember the selected tab
+export function Picker({ background, setBackground, className }) {
   const [selectedTab, setSelectedTab] = useState("solid");
+  const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
+
+  const handleColorChange = (color) => {
+    setHsva({ ...hsva, ...color.hsva });
+    setBackground(hsvaToHex({ ...hsva, ...color.hsva })); // Update background with the hex value
+  };
 
   return (
     <Popover>
@@ -86,11 +95,17 @@ export function Picker({ background, setBackground, className }) {
 
           <TabsContent value="wheel" className="mt-0">
             <div className="flex flex-wrap gap-1 mb-2 justify-items-center justify-center">
-              <ColorPicker
-                initialColor={background}
-                onChange={(color) => setBackground(color.hex)}
-                size={300}
-              />
+              <div className="flex flex-col gap-1 items-center">
+                <Wheel color={hsva} onChange={handleColorChange} />
+                <ShadeSlider
+                  hsva={hsva}
+                  style={{ width: 220, marginTop: 20 }}
+                  onChange={(newShade) => {
+                    setHsva({ ...hsva, ...newShade });
+                    setBackground(hsvaToHex({ ...hsva, ...newShade })); // Update background on shade change
+                  }}
+                />
+              </div>
             </div>
           </TabsContent>
         </Tabs>
