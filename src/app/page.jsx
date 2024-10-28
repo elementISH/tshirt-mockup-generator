@@ -17,13 +17,11 @@ export default function Page() {
   const [background, setBackground] = useState("#334155");
   const [showDialog, setShowDialog] = useState(false); // Track dialog visibility
   const [imageDataUrl, setImageDataUrl] = useState(null); // Store the image data URL
+  const [supportsCopy, setSupportsCopy] = useState(false); // Check for support
   const captureRef = useRef(null);
-  let supportsCopy;
+  // let supportsCopy = !!(navigator && navigator.clipboard);
 
   useEffect(() => {
-    if (navigator) {
-      supportsCopy = !!(navigator && navigator.clipboard);
-    }
     const applyBackgroundColor = () => {
       if (captureRef.current) {
         const colorElements = captureRef.current.querySelectorAll(
@@ -40,6 +38,7 @@ export default function Page() {
 
   const copyDivToClipboard = async () => {
     if (!captureRef.current) return;
+    setSupportsCopy(navigator);
 
     try {
       const canvas = await html2canvas(captureRef.current);
@@ -130,7 +129,11 @@ export default function Page() {
               className="max-w-full max-h-[70vh] object-contain"
             />
             <div className="flex gap-1 w-full">
-              <div className="flex flex-col gap-2 w-1/2">
+              <div
+                className={`flex flex-col gap-2 w-${
+                  supportsCopy ? "1/2" : "full"
+                }`}
+              >
                 {!supportsCopy && (
                   <p className="text-xs text-gray-600">
                     Long press the image to copy it. Alternatively, you can
