@@ -38,7 +38,7 @@ export default function Page() {
 
   const copyDivToClipboard = async () => {
     if (!captureRef.current) return;
-    setSupportsCopy(navigator);
+    setSupportsCopy(navigator.clipboard);
 
     try {
       const canvas = await html2canvas(captureRef.current);
@@ -55,13 +55,13 @@ export default function Page() {
     if (!imageDataUrl) return;
 
     // Show toast and delay download
-    toast.info("Opening image in new tab for download...");
-    setTimeout(() => {
-      const link = document.createElement("a");
-      link.href = imageDataUrl;
-      link.download = "image.png";
-      link.click();
-    }, 1500); // 1.5 seconds delay
+    toast.info("Preparing image for download...");
+    // setTimeout(() => {
+    //   const link = document.createElement("a");
+    //   link.href = imageDataUrl;
+    //   link.download = "image.png";
+    //   link.click();
+    // }, 1500); // 1.5 seconds delay
   };
 
   const handleCopyToClipboard = async () => {
@@ -144,7 +144,14 @@ export default function Page() {
                   onClick={handleDownload}
                   className="text-white bg-slate-900 w-full"
                 >
-                  Download Image
+                  <a
+                    href={imageDataUrl}
+                    download="image.png"
+                    className="text-white text-center w-full inline-block"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Download Image
+                  </a>
                 </Button>
               </div>
               {supportsCopy && (
