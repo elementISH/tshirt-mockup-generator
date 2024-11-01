@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { Paintbrush } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import { hsvaToHex } from "@uiw/color-convert";
+import { hsvaToHex, hexToHsva } from "@uiw/color-convert"; // Import hex to HSVA converter
 const ShadeSlider = dynamic(() => import("@uiw/react-color-shade-slider"), {
   ssr: false,
 });
@@ -36,9 +36,22 @@ export function Picker({ background, setBackground, className }) {
   const [selectedTab, setSelectedTab] = useState("solid");
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
 
+  const isValidHex = (hex) => {
+    const cleanedHex = hex.replace("#", "");
+    return cleanedHex.length === 3 || cleanedHex.length === 6;
+  };
+
   const handleColorChange = (color) => {
     setHsva({ ...hsva, ...color.hsva });
-    setBackground(hsvaToHex({ ...hsva, ...color.hsva })); // Update background with the hex value
+    const hexColor = hsvaToHex({ ...hsva, ...color.hsva });
+    setBackground(hexColor);
+  };
+
+  const handleSetBackground = (newColor) => {
+    setBackground(newColor);
+    if (isValidHex(newColor)) {
+      setHsva(hexToHsva(newColor)); // Update hsva to match the new color
+    }
   };
 
   return (
@@ -88,7 +101,7 @@ export function Picker({ background, setBackground, className }) {
                 key={s}
                 style={{ background: s }}
                 className="rounded-md h-6 w-6 cursor-pointer active:scale-105"
-                onClick={() => setBackground(s)}
+                onClick={() => handleSetBackground(s)} // Use helper to update color
               />
             ))}
           </TabsContent>
@@ -102,7 +115,7 @@ export function Picker({ background, setBackground, className }) {
                   style={{ width: 220, marginTop: 20 }}
                   onChange={(newShade) => {
                     setHsva({ ...hsva, ...newShade });
-                    setBackground(hsvaToHex({ ...hsva, ...newShade })); // Update background on shade change
+                    setBackground(hsvaToHex({ ...hsva, ...newShade }));
                   }}
                 />
               </div>
@@ -114,7 +127,7 @@ export function Picker({ background, setBackground, className }) {
           id="custom"
           value={background}
           className="col-span-2 h-8 mt-4"
-          onChange={(e) => setBackground(e.currentTarget.value)}
+          onChange={(e) => handleSetBackground(e.currentTarget.value)} // Use helper to update color
         />
       </PopoverContent>
     </Popover>
