@@ -139,16 +139,11 @@ export default function Page() {
                     </TabsList>
                     <div ref={captureRef}>
                       <TabsContent value="polo">
-                        <Image
+                        <img
                           src={"/Tshirt.webp"}
                           alt="Polo Shirt"
-                          sizes="100vw"
-                          width={400}
-                          height={600}
                           priority={true}
-                          quality={100}
                           loading={"eager"}
-                          placeholder="empty"
                           style={{
                             width: "100%",
                             height: "auto",
@@ -157,16 +152,12 @@ export default function Page() {
                         />
                       </TabsContent>
                       <TabsContent value="hoodie">
-                        <Image
+                        <img
                           src={"/hoodie.webp"}
                           alt="Hoodie"
-                          sizes="100vw"
-                          width={400}
-                          height={600}
                           priority={true}
                           quality={100}
                           loading={"eager"}
-                          placeholder="empty"
                           style={{
                             width: "100%",
                             height: "auto",
