@@ -12,7 +12,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"; // Import shadcn Dialog components
 import { Button } from "@/components/ui/button";
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Image from "next/image";
 function dataURItoBlob(dataurl) {
   if (!dataurl) return;
   const arr = dataurl.split(",");
@@ -119,20 +120,62 @@ export default function Page() {
       </div>
       <div className="h-screen w-screen grid place-items-center bg-slate-700 overflow-hidden">
         <div className="grid place-items-center">
-          <div className="w-[90%] md:w-[30%]">
+          <div className="w-[90%] md:w-[30%] mt-14 md:mt-0">
             <div className="flex flex-col gap-4">
               <div
                 className="w-full relative"
-                ref={captureRef}
-                style={{ background: background }}
+                // style={{ background: background }}
               >
-                <div className="absolute top-2 left-4 text-black z-10 p-1 rounded ">
+                <div className="absolute top-14 left-4 text-black z-10 p-1 rounded ">
                   color: {background}
                 </div>
                 <Suspense
                   fallback={<LoaderCircle size={64} className="animate-spin" />}
                 >
-                  <img src="Tshirt.png" alt="T-shirt" />
+                  <Tabs defaultValue="polo">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="polo">polo</TabsTrigger>
+                      <TabsTrigger value="hoodie">hoodie</TabsTrigger>
+                    </TabsList>
+                    <div ref={captureRef}>
+                      <TabsContent value="polo">
+                        <Image
+                          src={"/Tshirt.webp"}
+                          alt="Polo Shirt"
+                          sizes="100vw"
+                          width={400}
+                          height={600}
+                          priority={true}
+                          quality={100}
+                          loading={"eager"}
+                          placeholder="empty"
+                          style={{
+                            width: "100%",
+                            height: "auto",
+                            background: background,
+                          }}
+                        />
+                      </TabsContent>
+                      <TabsContent value="hoodie">
+                        <Image
+                          src={"/hoodie.webp"}
+                          alt="Hoodie"
+                          sizes="100vw"
+                          width={400}
+                          height={600}
+                          priority={true}
+                          quality={100}
+                          loading={"eager"}
+                          placeholder="empty"
+                          style={{
+                            width: "100%",
+                            height: "auto",
+                            background: background,
+                          }}
+                        />
+                      </TabsContent>
+                    </div>
+                  </Tabs>
                 </Suspense>
               </div>
               <div>
