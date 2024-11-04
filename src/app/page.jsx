@@ -126,9 +126,6 @@ export default function Page() {
                 className="w-full relative"
                 // style={{ background: background }}
               >
-                <div className="absolute top-14 left-4 text-black z-10 p-1 rounded ">
-                  color: {background}
-                </div>
                 <Suspense
                   fallback={<LoaderCircle size={64} className="animate-spin" />}
                 >
@@ -137,7 +134,10 @@ export default function Page() {
                       <TabsTrigger value="polo">polo</TabsTrigger>
                       <TabsTrigger value="hoodie">hoodie</TabsTrigger>
                     </TabsList>
-                    <div ref={captureRef}>
+                    <div ref={captureRef} className="relative">
+                      <div className="absolute top-5 left-4 text-black z-10 p-1 rounded ">
+                        color: {background}
+                      </div>
                       <TabsContent value="polo">
                         <img
                           src={"/Tshirt.webp"}
